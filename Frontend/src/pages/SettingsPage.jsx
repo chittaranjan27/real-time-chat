@@ -2,6 +2,7 @@ import { THEMES } from "../constants";
 import { useThemeStore } from "../store/useThemeStore";
 import { Send } from "lucide-react";
 
+// Sample preview messages for the chat UI
 const PREVIEW_MESSAGES = [
   { id: 1, content: "Hey! How's it going?", isSent: false },
   { id: 2, content: "I'm doing great! Just working on some new features.", isSent: true },
@@ -9,6 +10,11 @@ const PREVIEW_MESSAGES = [
 
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
+
+  // Debugging logs to check state values
+  console.log("Current Theme:", theme);
+  console.log("Available Themes:", THEMES);
+  console.log("Preview Messages:", PREVIEW_MESSAGES);
 
   return (
     <div className="container mx-auto px-4 pt-20 max-w-5xl">
@@ -23,29 +29,33 @@ const SettingsPage = () => {
           </div>
 
           <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-            {THEMES.map((t) => (
-              <button
-                key={t}
-                className={`
-                  group flex flex-col items-center gap-2 p-3 rounded-xl transition-all
-                  border border-base-300 hover:border-primary/50
-                  ${theme === t ? "ring-2 ring-primary ring-offset-2" : ""}
-                `}
-                onClick={() => setTheme(t)}
-              >
-                <div className="relative h-10 w-full rounded-lg overflow-hidden" data-theme={t}>
-                  <div className="absolute inset-0 grid grid-cols-4 gap-px p-1">
-                    <div className="rounded bg-primary"></div>
-                    <div className="rounded bg-secondary"></div>
-                    <div className="rounded bg-accent"></div>
-                    <div className="rounded bg-neutral"></div>
+            {Array.isArray(THEMES) ? (
+              THEMES.map((t) => (
+                <button
+                  key={t}
+                  className={`
+                    group flex flex-col items-center gap-2 p-3 rounded-xl transition-all
+                    border border-base-300 hover:border-primary/50
+                    ${theme === t ? "ring-2 ring-primary ring-offset-2" : ""}
+                  `}
+                  onClick={() => setTheme(t)}
+                >
+                  <div className="relative h-10 w-full rounded-lg overflow-hidden" data-theme={t}>
+                    <div className="absolute inset-0 grid grid-cols-4 gap-px p-1">
+                      <div className="rounded bg-primary"></div>
+                      <div className="rounded bg-secondary"></div>
+                      <div className="rounded bg-accent"></div>
+                      <div className="rounded bg-neutral"></div>
+                    </div>
                   </div>
-                </div>
-                <span className="text-xs font-medium text-base-content/90 truncate w-full text-center">
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </span>
-              </button>
-            ))}
+                  <span className="text-xs font-medium text-base-content/90 truncate w-full text-center">
+                    {t.charAt(0).toUpperCase() + t.slice(1)}
+                  </span>
+                </button>
+              ))
+            ) : (
+              <p className="text-red-500">Error: THEMES is not an array!</p>
+            )}
           </div>
         </div>
 
@@ -72,29 +82,31 @@ const SettingsPage = () => {
 
                   {/* Chat Messages */}
                   <div className="p-5 space-y-4 min-h-[220px] max-h-[220px] overflow-y-auto bg-base-100">
-                    {PREVIEW_MESSAGES.map((message) => (
-                      <div
-                        key={message.id}
-                        className={`flex ${message.isSent ? "justify-end" : "justify-start"}`}
-                      >
+                    {Array.isArray(PREVIEW_MESSAGES) ? (
+                      PREVIEW_MESSAGES.map((message) => (
                         <div
-                          className={`
-                            max-w-[80%] rounded-xl p-3 shadow-sm
-                            ${message.isSent ? "bg-primary text-primary-content" : "bg-base-200"}
-                          `}
+                          key={message.id}
+                          className={`flex ${message.isSent ? "justify-end" : "justify-start"}`}
                         >
-                          <p className="text-sm">{message.content}</p>
-                          <p
-                            className={`
-                              text-[10px] mt-1.5
-                              ${message.isSent ? "text-primary-content/70" : "text-base-content/70"}
-                            `}
+                          <div
+                            className={`max-w-[80%] rounded-xl p-3 shadow-sm ${
+                              message.isSent ? "bg-primary text-primary-content" : "bg-base-200"
+                            }`}
                           >
-                            12:00 PM
-                          </p>
+                            <p className="text-sm">{message.content}</p>
+                            <p
+                              className={`text-[10px] mt-1.5 ${
+                                message.isSent ? "text-primary-content/70" : "text-base-content/70"
+                              }`}
+                            >
+                              12:00 PM
+                            </p>
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    ) : (
+                      <p className="text-red-500">Error: PREVIEW_MESSAGES is not an array!</p>
+                    )}
                   </div>
 
                   {/* Chat Input */}
