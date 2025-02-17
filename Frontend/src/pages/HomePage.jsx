@@ -13,7 +13,7 @@ const HomePage = () => {
         <div className="bg-base-100 rounded-xl shadow-lg w-full max-w-7xl h-[calc(100vh-8rem)] overflow-hidden">
           <div className="flex h-full">
             {/* Sidebar */}
-            <div className="w-80 border-r border-base-300">
+            <div className="w-50 border-r border-base-200">
               <Sidebar />
             </div>
 
