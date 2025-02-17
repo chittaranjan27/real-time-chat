@@ -1,4 +1,4 @@
-                                                          # Chat Application
+                                                 # Chat Application
 
 ## 🚀 Overview
 This is a real-time chat application built using the **MERN** stack along with **Socket.io** for real-time messaging. The app features authentication, online user status, global state management, and robust error handling.
