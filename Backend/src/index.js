@@ -16,6 +16,9 @@ import {app, server} from './lib/socket.js'
 
 const PORT = process.env.PORT || 5001;
 const __dirname = path.resolve();
+const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173")
+    .split(",")
+    .map((origin) => origin.trim());
 
 
 app.use(express.json({ limit: "10mb" }));
@@ -31,7 +34,7 @@ app.use((req, res, next) => {
 
 app.use(
     cors({
-        origin: "http://localhost:5173",
+        origin: allowedOrigins,
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         credentials: true,
         allowedHeaders: ["Content-Type", "Authorization"],
@@ -55,5 +58,4 @@ server.listen(PORT, () => {
     console.log("Server is running on port:", PORT);
     connectDB();
 });
-
 

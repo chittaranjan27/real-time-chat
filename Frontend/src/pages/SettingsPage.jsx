@@ -11,11 +11,6 @@ const PREVIEW_MESSAGES = [
 const SettingsPage = () => {
   const { theme, setTheme } = useThemeStore();
 
-  // Debugging logs to check state values
-  console.log("Current Theme:", theme);
-  console.log("Available Themes:", THEMES);
-  console.log("Preview Messages:", PREVIEW_MESSAGES);
-
   return (
     <div className="container mx-auto px-4 pt-20 max-w-5xl">
       <div className="space-y-8">

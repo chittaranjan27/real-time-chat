@@ -6,11 +6,14 @@ import toast from "react-hot-toast";
 const MessageInput = () => {
   const [text, setText] = useState("");
   const [imagePreview, setImagePreview] = useState(null);
+  const [isSending, setIsSending] = useState(false);
   const fileInputRef = useRef(null);
+  const textInputRef = useRef(null);
   const { sendMessage } = useChatStore();
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
+    if (!file) return;
     if (!file.type.startsWith("image/")) {
       toast.error("Please select an image file");
       return;
@@ -30,9 +33,10 @@ const MessageInput = () => {
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
-    if (!text.trim() && !imagePreview) return;
+    if ((!text.trim() && !imagePreview) || isSending) return;
 
     try {
+      setIsSending(true);
       await sendMessage({
         text: text.trim(),
         image: imagePreview,
@@ -42,13 +46,16 @@ const MessageInput = () => {
       setText("");
       setImagePreview(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
+      textInputRef.current?.focus();
     } catch (error) {
       console.error("Failed to send message:", error);
+    } finally {
+      setIsSending(false);
     }
   };
 
   return (
-    <div className="p-4 w-full">
+    <div className="w-full border-t border-base-300 bg-base-100 p-3 sm:p-4">
       {imagePreview && (
         <div className="mb-3 flex items-center gap-2">
           <div className="relative">
@@ -59,24 +66,26 @@ const MessageInput = () => {
             />
             <button
               onClick={removeImage}
-              className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-full bg-base-300
-              flex items-center justify-center"
+              className="absolute -right-1.5 -top-1.5 flex h-6 w-6 items-center justify-center rounded-full bg-base-300 shadow"
               type="button"
+              aria-label="Remove selected image"
             >
-              <X className="size-3" />
+              <X className="size-4" />
             </button>
           </div>
         </div>
       )}
 
       <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-        <div className="flex-1 flex gap-2">
+        <div className="flex flex-1 gap-2">
           <input
+            ref={textInputRef}
             type="text"
             className="w-full input input-bordered rounded-lg input-sm sm:input-md"
             placeholder="Type a message..."
             value={text}
             onChange={(e) => setText(e.target.value)}
+            disabled={isSending}
           />
           <input
             type="file"
@@ -88,19 +97,21 @@ const MessageInput = () => {
 
           <button
             type="button"
-            className={`hidden sm:flex btn btn-circle
-                     ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
+            className={`btn btn-circle btn-sm sm:btn-md ${imagePreview ? "text-emerald-500" : "text-base-content/60"}`}
             onClick={() => fileInputRef.current?.click()}
+            aria-label="Attach image"
+            disabled={isSending}
           >
             <Image size={20} />
           </button>
         </div>
         <button
           type="submit"
-          className="btn btn-sm btn-circle"
-          disabled={!text.trim() && !imagePreview}
+          className="btn btn-primary btn-sm btn-circle sm:btn-md"
+          disabled={(!text.trim() && !imagePreview) || isSending}
+          aria-label="Send message"
         >
-          <Send size={22} />
+          <Send size={20} />
         </button>
       </form>
     </div>
